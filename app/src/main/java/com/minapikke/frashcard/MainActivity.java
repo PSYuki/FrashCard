@@ -13,6 +13,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 import java.io.File;
 
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText3;
     private EditText editText4;
     private EditText editText5;
+    private String subjectStr;
+    private String tenseStr;
 
     private final static String DB_TABLE_PRE="preCardTable";
 
@@ -130,6 +135,33 @@ public class MainActivity extends AppCompatActivity {
                                 ((ListView) findViewById(R.id.listView)).setAdapter(ad);
                             }
                         });
+
+        Spinner spinner = findViewById(R.id.spinner1);
+
+        // ArrayAdapter
+        ArrayAdapter<String> adapter
+                = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // spinner に adapter をセット
+        spinner.setAdapter(adapter);
+
+        // リスナーを登録
+        spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+            //　アイテムが選択された時
+            @Override
+            public void onItemSelected(AdapterView<?> parent,
+                                       View view, int position, long id) {
+                Spinner spinner = (Spinner)parent;
+                subjectStr = (String)spinner.getSelectedItem();
+            }
+
+            //　アイテムが選択されなかった
+            public void onNothingSelected(AdapterView<?> parent) {
+                //
+            }
+        });
     }
 
     private void writeToDB(String word,String eng_example,String jap_example) throws Exception {
