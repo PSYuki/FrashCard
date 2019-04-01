@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                                     String word = editText.getText().toString();
                                     String eng_example = editText2.getText().toString();
                                     String jap_example = editText3.getText().toString();
-                                    writeToDB(word,eng_example,jap_example);
+                                    writeToDB(word,subjectStr,tenseStr,eng_example,jap_example);
                                 } catch (Exception e) {
                                     showDialog(getApplicationContext(), "ERROR", "データの書き込みに失敗しました");
                                 }
@@ -136,19 +136,22 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
-        Spinner spinner = findViewById(R.id.spinner1);
+        final Spinner spinner1 = (Spinner) findViewById(R.id.spinner1);
 
         // ArrayAdapter
-        ArrayAdapter<String> adapter
-                = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> adapter1
+                = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.subjectList));
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // spinner に adapter をセット
-        spinner.setAdapter(adapter);
+        spinner1.setAdapter(adapter1);
+
+        // デフォルト選択
+        subjectStr = getResources().getStringArray(R.array.subjectList)[0];
 
         // リスナーを登録
-        spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+        spinner1.setOnItemSelectedListener(new OnItemSelectedListener() {
             //　アイテムが選択された時
             @Override
             public void onItemSelected(AdapterView<?> parent,
@@ -162,14 +165,45 @@ public class MainActivity extends AppCompatActivity {
                 //
             }
         });
+
+        final Spinner spinner2 = findViewById(R.id.spinner2);
+
+        // ArrayAdapter
+        ArrayAdapter<String> adapter2
+                = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.tenseList));
+
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // spinner に adapter をセット
+        spinner2.setAdapter(adapter2);
+
+        // デフォルト選択
+        subjectStr = getResources().getStringArray(R.array.tenseList)[0];
+
+        // リスナーを登録
+        spinner2.setOnItemSelectedListener(new OnItemSelectedListener() {
+            //　アイテムが選択された時
+            @Override
+            public void onItemSelected(AdapterView<?> parent,
+                                       View view, int position, long id) {
+                Spinner spinner = (Spinner)parent;
+                tenseStr = (String)spinner.getSelectedItem();
+            }
+
+            //　アイテムが選択されなかった
+            public void onNothingSelected(AdapterView<?> parent) {
+                //
+            }
+        });
+
     }
 
-    private void writeToDB(String word,String eng_example,String jap_example) throws Exception {
+    private void writeToDB(String word,String subjectStr,String tenseStr,String eng_example,String jap_example) throws Exception {
         ContentValues contentValObject = new ContentValues();
         //contentValObject.put("id","5");
         contentValObject.put("word",word);
-        contentValObject.put("subject","I");
-        contentValObject.put("tense","現在・肯定・基本");
+        contentValObject.put("subject",subjectStr);
+        contentValObject.put("tense",tenseStr);
         contentValObject.put("eng_example",eng_example);
         contentValObject.put("jap_example",jap_example);
         /*int numberOfColumns =
